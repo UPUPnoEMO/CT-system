@@ -546,11 +546,15 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- 1. 引入 Mermaid 官方 CDN -->
-    <script type="module">
-      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-      // 2. 初始化 Mermaid
-      mermaid.initialize({ startOnLoad: true });
+    <!-- Mermaid 图表渲染 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+      // 初始化 Mermaid（startOnLoad=false，因为内容是动态加载的）
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: "default",
+        securityLevel: "loose",
+      });
     </script>
     <script>
       // Config: GitHub Pages base path
@@ -652,14 +656,33 @@
           const md = await resp.text();
           loading.style.display = "none";
           out.innerHTML = marked.parse(md);
+          // 高亮代码块（排除 mermaid 代码块，留给 mermaid 渲染）
           out
-            .querySelectorAll("pre code")
+            .querySelectorAll("pre code:not(.language-mermaid)")
             .forEach((el) => hljs.highlightElement(el));
+          // 渲染 Mermaid 图表
+          renderMermaid(out);
           buildTOC(out);
         } catch (e) {
           loading.style.display = "none";
           out.innerHTML = `<div style="padding:40px;text-align:center;color:#888"><p style="font-size:40px">📄</p><p>页面 <code>${page}.md</code> 不存在</p><p style="font-size:13px;margin-top:8px">请在 docs/${page}.md 创建笔记</p></div>`;
         }
+      }
+
+      function renderMermaid(container) {
+        // 找到所有 language-mermaid 代码块，转换成 mermaid 图表容器
+        const mermaidBlocks = container.querySelectorAll("pre code.language-mermaid");
+        if (mermaidBlocks.length === 0) return;
+        mermaidBlocks.forEach((codeEl) => {
+          const preEl = codeEl.closest("pre");
+          if (!preEl) return;
+          const mermaidDiv = document.createElement("div");
+          mermaidDiv.className = "mermaid";
+          mermaidDiv.textContent = codeEl.textContent;
+          preEl.replaceWith(mermaidDiv);
+        });
+        // 通知 mermaid 渲染新添加的图表
+        mermaid.run();
       }
 
       function buildTOC(container) {
