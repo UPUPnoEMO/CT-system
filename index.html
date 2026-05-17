@@ -1,326 +1,633 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CT 系统工程师知识库</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CT 系统工程师知识库</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-  :root {
-    --sidebar-w: 260px;
-    --header-h: 56px;
-    --bg: #f8f9fa;
-    --surface: #ffffff;
-    --border: #e1e4e8;
-    --primary: #0969da;
-    --primary-light: #ddf4ff;
-    --text: #1f2328;
-    --text-muted: #656d76;
-    --accent: #0969da;
-    --radius: 8px;
-    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-  }
+      :root {
+        --sidebar-w: 260px;
+        --header-h: 56px;
+        --bg: #f8f9fa;
+        --surface: #ffffff;
+        --border: #e1e4e8;
+        --primary: #0969da;
+        --primary-light: #ddf4ff;
+        --text: #1f2328;
+        --text-muted: #656d76;
+        --accent: #0969da;
+        --radius: 8px;
+        --font:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+        --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      }
 
-  body { font-family: var(--font); background: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
 
-  /* Header */
-  #header {
-    height: var(--header-h);
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    gap: 16px;
-    flex-shrink: 0;
-    z-index: 100;
-  }
-  #header .logo {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--text);
-    white-space: nowrap;
-  }
-  #header .logo span { color: var(--primary); }
-  #search-box {
-    flex: 1;
-    max-width: 420px;
-    padding: 7px 14px;
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    font-size: 13px;
-    outline: none;
-    background: var(--bg);
-    color: var(--text);
-  }
-  #search-box:focus { border-color: var(--primary); background: #fff; }
-  #menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 6px;
-    color: var(--text);
-  }
+      /* Header */
+      #header {
+        height: var(--header-h);
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        gap: 16px;
+        flex-shrink: 0;
+        z-index: 100;
+      }
+      #header .logo {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--text);
+        white-space: nowrap;
+      }
+      #header .logo span {
+        color: var(--primary);
+      }
+      #search-box {
+        flex: 1;
+        max-width: 420px;
+        padding: 7px 14px;
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        font-size: 13px;
+        outline: none;
+        background: var(--bg);
+        color: var(--text);
+      }
+      #search-box:focus {
+        border-color: var(--primary);
+        background: #fff;
+      }
+      #menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+        color: var(--text);
+      }
 
-  /* Layout */
-  #app { display: flex; flex: 1; overflow: hidden; }
+      /* Layout */
+      #app {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
 
-  /* Sidebar */
-  #sidebar {
-    width: var(--sidebar-w);
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    overflow-y: auto;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-  }
-  #sidebar-inner { padding: 12px 0; }
-  .nav-section { margin-bottom: 4px; }
-  .nav-section-title {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text-muted);
-    padding: 8px 16px 4px;
-  }
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 16px;
-    font-size: 13.5px;
-    color: var(--text);
-    cursor: pointer;
-    border-radius: 0;
-    transition: background 0.12s;
-    text-decoration: none;
-    border-left: 3px solid transparent;
-  }
-  .nav-item:hover { background: var(--bg); }
-  .nav-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 500; }
-  .nav-item .icon { font-size: 15px; flex-shrink: 0; }
-  .nav-sub { padding-left: 12px; }
-  .nav-sub .nav-item { font-size: 13px; }
+      /* Sidebar */
+      #sidebar {
+        width: var(--sidebar-w);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        overflow-y: auto;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      #sidebar-inner {
+        padding: 12px 0;
+      }
+      .nav-section {
+        margin-bottom: 4px;
+      }
+      .nav-section-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        padding: 8px 16px 4px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 16px;
+        font-size: 13.5px;
+        color: var(--text);
+        cursor: pointer;
+        border-radius: 0;
+        transition: background 0.12s;
+        text-decoration: none;
+        border-left: 3px solid transparent;
+      }
+      .nav-item:hover {
+        background: var(--bg);
+      }
+      .nav-item.active {
+        background: var(--primary-light);
+        color: var(--primary);
+        border-left-color: var(--primary);
+        font-weight: 500;
+      }
+      .nav-item .icon {
+        font-size: 15px;
+        flex-shrink: 0;
+      }
+      .nav-sub {
+        padding-left: 12px;
+      }
+      .nav-sub .nav-item {
+        font-size: 13px;
+      }
 
-  /* Content */
-  #content-area {
-    flex: 1;
-    overflow-y: auto;
-    padding: 32px 40px;
-    max-width: 900px;
-  }
+      /* Content */
+      #content-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 32px 40px;
+        max-width: 900px;
+      }
 
-  /* Right TOC */
-  #toc-panel {
-    width: 200px;
-    flex-shrink: 0;
-    padding: 32px 16px;
-    overflow-y: auto;
-    display: none;
-  }
-  #toc-panel.visible { display: block; }
-  #toc-inner { position: sticky; top: 0; }
-  #toc-inner h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
-  .toc-link { display: block; font-size: 12.5px; color: var(--text-muted); padding: 3px 0; text-decoration: none; border-left: 2px solid var(--border); padding-left: 8px; margin-bottom: 2px; }
-  .toc-link:hover { color: var(--primary); border-left-color: var(--primary); }
-  .toc-link.h3 { padding-left: 16px; font-size: 12px; }
+      /* Right TOC */
+      #toc-panel {
+        width: 200px;
+        flex-shrink: 0;
+        padding: 32px 16px;
+        overflow-y: auto;
+        display: none;
+      }
+      #toc-panel.visible {
+        display: block;
+      }
+      #toc-inner {
+        position: sticky;
+        top: 0;
+      }
+      #toc-inner h4 {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+      .toc-link {
+        display: block;
+        font-size: 12.5px;
+        color: var(--text-muted);
+        padding: 3px 0;
+        text-decoration: none;
+        border-left: 2px solid var(--border);
+        padding-left: 8px;
+        margin-bottom: 2px;
+      }
+      .toc-link:hover {
+        color: var(--primary);
+        border-left-color: var(--primary);
+      }
+      .toc-link.h3 {
+        padding-left: 16px;
+        font-size: 12px;
+      }
 
-  /* Markdown content */
-  #md-output { line-height: 1.7; font-size: 15px; }
-  #md-output h1 { font-size: 26px; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; margin-top: 0; }
-  #md-output h2 { font-size: 20px; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 6px; margin: 28px 0 14px; }
-  #md-output h3 { font-size: 16px; font-weight: 600; margin: 22px 0 10px; }
-  #md-output h4 { font-size: 14px; font-weight: 600; margin: 18px 0 8px; }
-  #md-output p { margin-bottom: 14px; }
-  #md-output ul, #md-output ol { margin: 0 0 14px 24px; }
-  #md-output li { margin-bottom: 4px; }
-  #md-output code {
-    font-family: var(--mono);
-    font-size: 13px;
-    background: #f6f8fa;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 2px 6px;
-  }
-  #md-output pre {
-    background: #f6f8fa;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    overflow-x: auto;
-    margin-bottom: 16px;
-  }
-  #md-output pre code { background: none; border: none; padding: 0; font-size: 13px; }
-  #md-output table { border-collapse: collapse; width: 100%; margin-bottom: 16px; font-size: 14px; }
-  #md-output th { background: #f6f8fa; font-weight: 600; }
-  #md-output th, #md-output td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
-  #md-output tr:nth-child(even) td { background: #fafbfc; }
-  #md-output blockquote { border-left: 4px solid var(--border); padding: 8px 16px; color: var(--text-muted); margin: 0 0 14px; background: var(--bg); border-radius: 0 4px 4px 0; }
-  #md-output hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
-  #md-output a { color: var(--primary); text-decoration: none; }
-  #md-output a:hover { text-decoration: underline; }
-  #md-output img { max-width: 100%; border-radius: var(--radius); }
+      /* Markdown content */
+      #md-output {
+        line-height: 1.7;
+        font-size: 15px;
+      }
+      #md-output h1 {
+        font-size: 26px;
+        font-weight: 600;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        margin-top: 0;
+      }
+      #md-output h2 {
+        font-size: 20px;
+        font-weight: 600;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 6px;
+        margin: 28px 0 14px;
+      }
+      #md-output h3 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 22px 0 10px;
+      }
+      #md-output h4 {
+        font-size: 14px;
+        font-weight: 600;
+        margin: 18px 0 8px;
+      }
+      #md-output p {
+        margin-bottom: 14px;
+      }
+      #md-output ul,
+      #md-output ol {
+        margin: 0 0 14px 24px;
+      }
+      #md-output li {
+        margin-bottom: 4px;
+      }
+      #md-output code {
+        font-family: var(--mono);
+        font-size: 13px;
+        background: #f6f8fa;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 2px 6px;
+      }
+      #md-output pre {
+        background: #f6f8fa;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+        overflow-x: auto;
+        margin-bottom: 16px;
+      }
+      #md-output pre code {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 13px;
+      }
+      #md-output table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 16px;
+        font-size: 14px;
+      }
+      #md-output th {
+        background: #f6f8fa;
+        font-weight: 600;
+      }
+      #md-output th,
+      #md-output td {
+        border: 1px solid var(--border);
+        padding: 8px 12px;
+        text-align: left;
+      }
+      #md-output tr:nth-child(even) td {
+        background: #fafbfc;
+      }
+      #md-output blockquote {
+        border-left: 4px solid var(--border);
+        padding: 8px 16px;
+        color: var(--text-muted);
+        margin: 0 0 14px;
+        background: var(--bg);
+        border-radius: 0 4px 4px 0;
+      }
+      #md-output hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 24px 0;
+      }
+      #md-output a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+      #md-output a:hover {
+        text-decoration: underline;
+      }
+      #md-output img {
+        max-width: 100%;
+        border-radius: var(--radius);
+      }
 
-  /* Home page cards */
-  .home-hero { margin-bottom: 32px; }
-  .home-hero h1 { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
-  .home-hero p { font-size: 15px; color: var(--text-muted); margin-bottom: 0; }
-  .module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 28px; }
-  .module-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    cursor: pointer;
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-  .module-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(9,105,218,0.1); }
-  .module-card .card-icon { font-size: 24px; margin-bottom: 8px; }
-  .module-card .card-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-  .module-card .card-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+      /* Home page cards */
+      .home-hero {
+        margin-bottom: 32px;
+      }
+      .home-hero h1 {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .home-hero p {
+        font-size: 15px;
+        color: var(--text-muted);
+        margin-bottom: 0;
+      }
+      .module-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 14px;
+        margin-bottom: 28px;
+      }
+      .module-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .module-card:hover {
+        border-color: var(--primary);
+        box-shadow: 0 2px 8px rgba(9, 105, 218, 0.1);
+      }
+      .module-card .card-icon {
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+      .module-card .card-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .module-card .card-desc {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        line-height: 1.5;
+      }
 
-  /* Loading */
-  #loading { display: none; padding: 40px; text-align: center; color: var(--text-muted); font-size: 14px; }
+      /* Loading */
+      #loading {
+        display: none;
+        padding: 40px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 14px;
+      }
 
-  /* Edit button */
-  .page-actions { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-  .btn-edit { font-size: 12px; padding: 5px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text-muted); cursor: pointer; text-decoration: none; }
-  .btn-edit:hover { background: var(--bg); color: var(--text); }
-  .breadcrumb { font-size: 13px; color: var(--text-muted); flex: 1; }
-  .breadcrumb span { color: var(--text); font-weight: 500; }
+      /* Edit button */
+      .page-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .btn-edit {
+        font-size: 12px;
+        padding: 5px 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--surface);
+        color: var(--text-muted);
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .btn-edit:hover {
+        background: var(--bg);
+        color: var(--text);
+      }
+      .breadcrumb {
+        font-size: 13px;
+        color: var(--text-muted);
+        flex: 1;
+      }
+      .breadcrumb span {
+        color: var(--text);
+        font-weight: 500;
+      }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    #menu-toggle { display: block; }
-    #sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; z-index: 200; transform: translateX(-100%); transition: transform 0.2s; }
-    #sidebar.open { transform: none; }
-    #content-area { padding: 20px 18px; }
-    #toc-panel { display: none !important; }
-  }
-  @media (min-width: 1200px) {
-    #toc-panel.visible { display: block; }
-    #content-area { max-width: 860px; }
-  }
-</style>
-</head>
-<body>
+      /* Responsive */
+      @media (max-width: 768px) {
+        #menu-toggle {
+          display: block;
+        }
+        #sidebar {
+          position: fixed;
+          top: var(--header-h);
+          left: 0;
+          bottom: 0;
+          z-index: 200;
+          transform: translateX(-100%);
+          transition: transform 0.2s;
+        }
+        #sidebar.open {
+          transform: none;
+        }
+        #content-area {
+          padding: 20px 18px;
+        }
+        #toc-panel {
+          display: none !important;
+        }
+      }
+      @media (min-width: 1200px) {
+        #toc-panel.visible {
+          display: block;
+        }
+        #content-area {
+          max-width: 860px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header id="header">
+      <button id="menu-toggle" aria-label="菜单" onclick="toggleSidebar()">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+          <rect y="3" width="18" height="2" />
+          <rect y="8" width="18" height="2" />
+          <rect y="13" width="18" height="2" />
+        </svg>
+      </button>
+      <div class="logo">CT <span>Engineer</span> Wiki</div>
+      <input
+        id="search-box"
+        type="text"
+        placeholder="搜索笔记..."
+        oninput="handleSearch(this.value)"
+      />
+    </header>
 
-<header id="header">
-  <button id="menu-toggle" aria-label="菜单" onclick="toggleSidebar()">
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><rect y="3" width="18" height="2"/><rect y="8" width="18" height="2"/><rect y="13" width="18" height="2"/></svg>
-  </button>
-  <div class="logo">CT <span>Engineer</span> Wiki</div>
-  <input id="search-box" type="text" placeholder="搜索笔记..." oninput="handleSearch(this.value)">
-</header>
+    <div id="app">
+      <nav id="sidebar">
+        <div id="sidebar-inner">
+          <div class="nav-section">
+            <div class="nav-section-title">导航</div>
+            <a
+              class="nav-item active"
+              data-page="home"
+              onclick="navigate('home', this)"
+            >
+              <span class="icon">🏠</span> 主页
+            </a>
+          </div>
+          <div class="nav-section">
+            <div class="nav-section-title">前段工艺</div>
+            <a
+              class="nav-item"
+              data-page="frontend-process/README"
+              onclick="navigate('frontend-process/README', this)"
+            >
+              <span class="icon">⚗️</span> 半导体制作工艺
+            </a>
+          </div>
+          <div class="nav-section">
+            <div class="nav-section-title">探测器</div>
+            <a
+              class="nav-item"
+              data-page="detector-design/README"
+              onclick="navigate('detector-design/README', this)"
+            >
+              <span class="icon">🔬</span> 探测器结构设计
+            </a>
+          </div>
+          <div class="nav-section">
+            <div class="nav-section-title">芯片设计</div>
+            <a
+              class="nav-item"
+              data-page="asic-design/README"
+              onclick="navigate('asic-design/README', this)"
+            >
+              <span class="icon">🔧</span> ASIC 读出芯片
+            </a>
+          </div>
+          <div class="nav-section">
+            <div class="nav-section-title">电路设计</div>
+            <a
+              class="nav-item"
+              data-page="digital-circuit/README"
+              onclick="navigate('digital-circuit/README', this)"
+            >
+              <span class="icon">💻</span> 数字电路 & FPGA
+            </a>
+            <a
+              class="nav-item"
+              data-page="analog-circuit/README"
+              onclick="navigate('analog-circuit/README', this)"
+            >
+              <span class="icon">📡</span> 模拟 & 电子电路
+            </a>
+          </div>
+          <div class="nav-section">
+            <div class="nav-section-title">仿真</div>
+            <a
+              class="nav-item"
+              data-page="geant4-simulation/README"
+              onclick="navigate('geant4-simulation/README', this)"
+            >
+              <span class="icon">☢️</span> GEANT4 能谱模拟
+            </a>
+          </div>
+          <div class="nav-section">
+            <div class="nav-section-title">整机系统</div>
+            <a
+              class="nav-item"
+              data-page="system-integration/README"
+              onclick="navigate('system-integration/README', this)"
+            >
+              <span class="icon">🏗️</span> 系统集成
+            </a>
+          </div>
+        </div>
+      </nav>
 
-<div id="app">
-  <nav id="sidebar">
-    <div id="sidebar-inner">
-      <div class="nav-section">
-        <div class="nav-section-title">导航</div>
-        <a class="nav-item active" data-page="home" onclick="navigate('home', this)">
-          <span class="icon">🏠</span> 主页
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section-title">前段工艺</div>
-        <a class="nav-item" data-page="frontend-process/README" onclick="navigate('frontend-process/README', this)">
-          <span class="icon">⚗️</span> 半导体制作工艺
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section-title">探测器</div>
-        <a class="nav-item" data-page="detector-design/README" onclick="navigate('detector-design/README', this)">
-          <span class="icon">🔬</span> 探测器结构设计
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section-title">芯片设计</div>
-        <a class="nav-item" data-page="asic-design/README" onclick="navigate('asic-design/README', this)">
-          <span class="icon">🔧</span> ASIC 读出芯片
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section-title">电路设计</div>
-        <a class="nav-item" data-page="digital-circuit/README" onclick="navigate('digital-circuit/README', this)">
-          <span class="icon">💻</span> 数字电路 & FPGA
-        </a>
-        <a class="nav-item" data-page="analog-circuit/README" onclick="navigate('analog-circuit/README', this)">
-          <span class="icon">📡</span> 模拟 & 电子电路
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section-title">仿真</div>
-        <a class="nav-item" data-page="geant4-simulation/README" onclick="navigate('geant4-simulation/README', this)">
-          <span class="icon">☢️</span> GEANT4 能谱模拟
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section-title">整机系统</div>
-        <a class="nav-item" data-page="system-integration/README" onclick="navigate('system-integration/README', this)">
-          <span class="icon">🏗️</span> 系统集成
-        </a>
-      </div>
+      <main id="content-area">
+        <div id="loading">加载中...</div>
+        <div id="md-output"></div>
+      </main>
+
+      <aside id="toc-panel">
+        <div id="toc-inner">
+          <h4>目录</h4>
+          <div id="toc-links"></div>
+        </div>
+      </aside>
     </div>
-  </nav>
 
-  <main id="content-area">
-    <div id="loading">加载中...</div>
-    <div id="md-output"></div>
-  </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- 1. 引入 Mermaid 官方 CDN -->
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+      // 2. 初始化 Mermaid
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    <script>
+      // Config: GitHub Pages base path
+      const BASE = "./docs/";
 
-  <aside id="toc-panel">
-    <div id="toc-inner">
-      <h4>目录</h4>
-      <div id="toc-links"></div>
-    </div>
-  </aside>
-</div>
+      // Module registry
+      const MODULES = [
+        {
+          page: "frontend-process/README",
+          icon: "⚗️",
+          title: "前段半导体制作工艺",
+          desc: "CZT/CdTe 材料、像素电极制备、凸点焊工艺",
+        },
+        {
+          page: "detector-design/README",
+          icon: "🔬",
+          title: "探测器结构设计",
+          desc: "直接/间接转换、模块结构、热管理",
+        },
+        {
+          page: "asic-design/README",
+          icon: "🔧",
+          title: "ASIC 读出芯片",
+          desc: "CSA、成形滤波、光子计数 vs 积分",
+        },
+        {
+          page: "digital-circuit/README",
+          icon: "💻",
+          title: "数字电路 & FPGA",
+          desc: "LVDS 采集、时序同步、PCIe 传输",
+        },
+        {
+          page: "analog-circuit/README",
+          icon: "📡",
+          title: "模拟 & 电子电路",
+          desc: "高压偏置、低噪声 LDO、PCB 叠层",
+        },
+        {
+          page: "geant4-simulation/README",
+          icon: "☢️",
+          title: "GEANT4 能谱模拟",
+          desc: "探测器响应、散射分析、剂量估算",
+        },
+        {
+          page: "system-integration/README",
+          icon: "🏗️",
+          title: "整机系统集成",
+          desc: "机架、球管、DAS、图像重建算法",
+        },
+      ];
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script>
-// Config: GitHub Pages base path
-const BASE = './docs/';
+      let currentPage = "home";
+      marked.setOptions({
+        highlight: (code, lang) => {
+          if (lang && hljs.getLanguage(lang))
+            return hljs.highlight(code, { language: lang }).value;
+          return hljs.highlightAuto(code).value;
+        },
+      });
 
-// Module registry
-const MODULES = [
-  { page: 'frontend-process/README', icon: '⚗️', title: '前段半导体制作工艺', desc: 'CZT/CdTe 材料、像素电极制备、凸点焊工艺' },
-  { page: 'detector-design/README',  icon: '🔬', title: '探测器结构设计',    desc: '直接/间接转换、模块结构、热管理' },
-  { page: 'asic-design/README',      icon: '🔧', title: 'ASIC 读出芯片',    desc: 'CSA、成形滤波、光子计数 vs 积分' },
-  { page: 'digital-circuit/README',  icon: '💻', title: '数字电路 & FPGA', desc: 'LVDS 采集、时序同步、PCIe 传输' },
-  { page: 'analog-circuit/README',   icon: '📡', title: '模拟 & 电子电路',  desc: '高压偏置、低噪声 LDO、PCB 叠层' },
-  { page: 'geant4-simulation/README',icon: '☢️', title: 'GEANT4 能谱模拟', desc: '探测器响应、散射分析、剂量估算' },
-  { page: 'system-integration/README',icon:'🏗️', title: '整机系统集成',     desc: '机架、球管、DAS、图像重建算法' },
-];
-
-let currentPage = 'home';
-marked.setOptions({ highlight: (code, lang) => {
-  if (lang && hljs.getLanguage(lang)) return hljs.highlight(code, { language: lang }).value;
-  return hljs.highlightAuto(code).value;
-}});
-
-function renderHome() {
-  const out = document.getElementById('md-output');
-  out.innerHTML = `
+      function renderHome() {
+        const out = document.getElementById("md-output");
+        out.innerHTML = `
     <div class="home-hero">
       <h1>CT 系统工程师知识库</h1>
       <p>覆盖从前段半导体工艺到整机系统集成的完整 CT 工程知识体系</p>
     </div>
     <div class="module-grid">
-      ${MODULES.map(m => `
+      ${MODULES.map(
+        (m) => `
         <div class="module-card" onclick="navigate('${m.page}', null)">
           <div class="card-icon">${m.icon}</div>
           <div class="card-title">${m.title}</div>
           <div class="card-desc">${m.desc}</div>
         </div>
-      `).join('')}
+      `,
+      ).join("")}
     </div>
     <h2 style="font-size:17px;margin:24px 0 12px">如何添加笔记</h2>
     <ol style="font-size:14px;line-height:2;color:#444">
@@ -331,72 +638,83 @@ function renderHome() {
     </ol>
     <blockquote style="margin-top:20px">基于纯静态 HTML + marked.js，无需 Node.js 构建，直接部署 GitHub Pages。</blockquote>
   `;
-  document.getElementById('toc-panel').classList.remove('visible');
-}
+        document.getElementById("toc-panel").classList.remove("visible");
+      }
 
-async function loadPage(page) {
-  const loading = document.getElementById('loading');
-  const out = document.getElementById('md-output');
-  loading.style.display = 'block';
-  out.innerHTML = '';
-  try {
-    const resp = await fetch(BASE + page + '.md');
-    if (!resp.ok) throw new Error('not found');
-    const md = await resp.text();
-    loading.style.display = 'none';
-    out.innerHTML = marked.parse(md);
-    out.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
-    buildTOC(out);
-  } catch(e) {
-    loading.style.display = 'none';
-    out.innerHTML = `<div style="padding:40px;text-align:center;color:#888"><p style="font-size:40px">📄</p><p>页面 <code>${page}.md</code> 不存在</p><p style="font-size:13px;margin-top:8px">请在 docs/${page}.md 创建笔记</p></div>`;
-  }
-}
+      async function loadPage(page) {
+        const loading = document.getElementById("loading");
+        const out = document.getElementById("md-output");
+        loading.style.display = "block";
+        out.innerHTML = "";
+        try {
+          const resp = await fetch(BASE + page + ".md");
+          if (!resp.ok) throw new Error("not found");
+          const md = await resp.text();
+          loading.style.display = "none";
+          out.innerHTML = marked.parse(md);
+          out
+            .querySelectorAll("pre code")
+            .forEach((el) => hljs.highlightElement(el));
+          buildTOC(out);
+        } catch (e) {
+          loading.style.display = "none";
+          out.innerHTML = `<div style="padding:40px;text-align:center;color:#888"><p style="font-size:40px">📄</p><p>页面 <code>${page}.md</code> 不存在</p><p style="font-size:13px;margin-top:8px">请在 docs/${page}.md 创建笔记</p></div>`;
+        }
+      }
 
-function buildTOC(container) {
-  const tocLinks = document.getElementById('toc-links');
-  const tocPanel = document.getElementById('toc-panel');
-  const headings = container.querySelectorAll('h2, h3');
-  if (headings.length < 2) { tocPanel.classList.remove('visible'); return; }
-  tocPanel.classList.add('visible');
-  tocLinks.innerHTML = '';
-  headings.forEach((h, i) => {
-    const id = 'h-' + i;
-    h.id = id;
-    const a = document.createElement('a');
-    a.className = 'toc-link' + (h.tagName === 'H3' ? ' h3' : '');
-    a.textContent = h.textContent;
-    a.href = '#' + id;
-    tocLinks.appendChild(a);
-  });
-}
+      function buildTOC(container) {
+        const tocLinks = document.getElementById("toc-links");
+        const tocPanel = document.getElementById("toc-panel");
+        const headings = container.querySelectorAll("h2, h3");
+        if (headings.length < 2) {
+          tocPanel.classList.remove("visible");
+          return;
+        }
+        tocPanel.classList.add("visible");
+        tocLinks.innerHTML = "";
+        headings.forEach((h, i) => {
+          const id = "h-" + i;
+          h.id = id;
+          const a = document.createElement("a");
+          a.className = "toc-link" + (h.tagName === "H3" ? " h3" : "");
+          a.textContent = h.textContent;
+          a.href = "#" + id;
+          tocLinks.appendChild(a);
+        });
+      }
 
-function navigate(page, el) {
-  currentPage = page;
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (el) el.classList.add('active');
-  else {
-    const match = document.querySelector(`[data-page="${page}"]`);
-    if (match) match.classList.add('active');
-  }
-  if (page === 'home') { renderHome(); }
-  else { loadPage(page); }
-  if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
-  window.scrollTo(0, 0);
-}
+      function navigate(page, el) {
+        currentPage = page;
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((n) => n.classList.remove("active"));
+        if (el) el.classList.add("active");
+        else {
+          const match = document.querySelector(`[data-page="${page}"]`);
+          if (match) match.classList.add("active");
+        }
+        if (page === "home") {
+          renderHome();
+        } else {
+          loadPage(page);
+        }
+        if (window.innerWidth <= 768)
+          document.getElementById("sidebar").classList.remove("open");
+        window.scrollTo(0, 0);
+      }
 
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-}
+      function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("open");
+      }
 
-function handleSearch(q) {
-  if (!q.trim()) return;
-  // Basic: highlight or navigate to search results page
-  // For full-text search, integrate lunr.js in future
-}
+      function handleSearch(q) {
+        if (!q.trim()) return;
+        // Basic: highlight or navigate to search results page
+        // For full-text search, integrate lunr.js in future
+      }
 
-// Initial render
-renderHome();
-</script>
-</body>
+      // Initial render
+      renderHome();
+    </script>
+  </body>
 </html>
