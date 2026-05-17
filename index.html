@@ -528,6 +528,42 @@
               <span class="icon">🏗️</span> 系统集成
             </a>
           </div>
+          <div class="nav-section">
+            <div class="nav-section-title">可靠性</div>
+            <a
+              class="nav-item"
+              data-page="reliability-analysis/README"
+              onclick="navigate('reliability-analysis/README', this)"
+            >
+              <span class="icon">📊</span> 可靠性分析
+            </a>
+          </div>
+          <div class="nav-section">
+            <div class="nav-section-title">质量控制</div>
+            <a
+              class="nav-item"
+              data-page="quality-control/README"
+              onclick="navigate('quality-control/README', this)"
+            >
+              <span class="icon">✅</span> 质量控制总览
+            </a>
+            <div class="nav-sub">
+              <a
+                class="nav-item"
+                data-page="quality-control/quality-control-process"
+                onclick="navigate('quality-control/quality-control-process', this)"
+              >
+                <span class="icon">📋</span> 质量控制过程
+              </a>
+              <a
+                class="nav-item"
+                data-page="quality-control/grr"
+                onclick="navigate('quality-control/grr', this)"
+              >
+                <span class="icon">📏</span> GR&amp;R 测量系统分析
+              </a>
+            </div>
+          </div>
         </div>
       </nav>
 
@@ -603,6 +639,18 @@
           icon: "🏗️",
           title: "整机系统集成",
           desc: "机架、球管、DAS、图像重建算法",
+        },
+        {
+          page: "reliability-analysis/README",
+          icon: "📊",
+          title: "可靠性分析",
+          desc: "失效模式、MTBF、浴盆曲线、可靠性预计与试验",
+        },
+        {
+          page: "quality-control/README",
+          icon: "✅",
+          title: "质量控制",
+          desc: "QC 过程、SPC、MSA、GR&R、CAPA 质量管理",
         },
       ];
 
